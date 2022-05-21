@@ -1,0 +1,5 @@
+data/
+tmp*
+.snakemake
+.vscode
+.DS_Store
