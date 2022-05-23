@@ -3,3 +3,5 @@ tmp*
 .snakemake
 .vscode
 .DS_Store
+# remove results/ when final
+results 

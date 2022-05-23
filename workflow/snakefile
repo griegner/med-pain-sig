@@ -6,6 +6,14 @@ configfile: "config/smk-config.yml"
 
 df = pd.read_csv("config/cbf-filtered.csv").query('task.str.endswith("49C")')
 
+cbf_to_ps = expand(
+    config["cbf_to_ps"],
+    zip,
+    sub=df["sub"],
+    ses=df["ses"],
+    run=df["run"],
+    task=df["task"],
+)
 
 def hs_map_ns(wc):
     "create mapping between heat runs and corresponding neutral runs"
@@ -23,15 +31,17 @@ def hs_map_ns(wc):
 
 rule all:
     input:
-        expand(
-            config["cbf_to_ps"],
-            zip,
-            sub=df["sub"],
-            ses=df["ses"],
-            run=df["run"],
-            task=df["task"],
-        ),
+        cbf_to_ps,
+        config["cbf_ps_agg"]
 
+rule cbf_ps_agg:
+    input: 
+        cbf_to_ps,
+    output:
+        config["cbf_ps_agg"]
+    run:
+        ps_responses = [pd.read_csv(csv) for csv in input]
+        pd.concat(ps_responses).to_csv(output[0], index=False)
 
 rule cbf_to_ps:
     input:
