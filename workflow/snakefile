@@ -4,16 +4,20 @@ import pandas as pd
 configfile: "config/smk-config.yml"
 
 
-df = pd.read_csv("config/cbf-filtered.csv").query('task.str.endswith("49C")')
+cbf = pd.read_csv("config/cbf-filtered.csv").query('task.str.endswith("49C")')
+bold = pd.read_csv("config/bold-filtered.csv")
 
 cbf_to_ps = expand(
     config["cbf_to_ps"],
     zip,
-    sub=df["sub"],
-    ses=df["ses"],
-    run=df["run"],
-    task=df["task"],
+    sub=cbf["sub"],
+    ses=cbf["ses"],
+    run=cbf["run"],
+    task=cbf["task"],
 )
+
+bold_to_pe = expand(config["bold_to_pe"], zip, sub=bold["sub"], task=bold["task"])
+
 
 def hs_map_ns(wc):
     "create mapping between heat runs and corresponding neutral runs"
@@ -31,17 +35,19 @@ def hs_map_ns(wc):
 
 rule all:
     input:
-        cbf_to_ps,
-        config["cbf_ps_agg"]
+        config["cbf_ps_agg"],
+        bold_to_pe,
+
 
 rule cbf_ps_agg:
-    input: 
+    input:
         cbf_to_ps,
     output:
-        config["cbf_ps_agg"]
+        config["cbf_ps_agg"],
     run:
         ps_responses = [pd.read_csv(csv) for csv in input]
         pd.concat(ps_responses).to_csv(output[0], index=False)
+
 
 rule cbf_to_ps:
     input:
@@ -53,3 +59,16 @@ rule cbf_to_ps:
         smooth_fwhm=config["smooth_fwhm"],
     shell:
         "python {input.cmd} {input.path[0]} {input.path[1]} {output} --smooth_fwhm {params.smooth_fwhm}"
+
+
+rule bold_to_pe:
+    input:
+        cmd="workflow/scripts/00_bold-to-pe.py",
+        path=config["fmriprep"],
+    output:
+        config["bold_to_pe"],
+    params:
+        smooth_fwhm=config["smooth_fwhm"],
+    threads: 6
+    shell:
+        "python {input.cmd} {input.path} {output} --smooth_fwhm {params.smooth_fwhm} --n_jobs {threads}"
