@@ -3,5 +3,6 @@ tmp*
 .snakemake
 .vscode
 .DS_Store
+__pycache__
 # remove results/ when final
 results 
