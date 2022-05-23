@@ -16,7 +16,7 @@ cbf_to_ps = expand(
     task=cbf["task"],
 )
 
-bold_to_pe = expand(config["bold_to_pe"], zip, sub=bold["sub"], task=bold["task"])
+bold_to_ps = expand(config["bold_to_ps"], zip, sub=bold["sub"], task=bold["task"])
 
 
 def hs_map_ns(wc):
@@ -36,7 +36,7 @@ def hs_map_ns(wc):
 rule all:
     input:
         config["cbf_ps_agg"],
-        bold_to_pe,
+        bold_to_ps,
 
 
 rule cbf_ps_agg:
@@ -59,6 +59,16 @@ rule cbf_to_ps:
         smooth_fwhm=config["smooth_fwhm"],
     shell:
         "python {input.cmd} {input.path[0]} {input.path[1]} {output} --smooth_fwhm {params.smooth_fwhm}"
+
+
+rule bold_to_ps:
+    input:
+        cmd="workflow/scripts/01_bold-to-ps.py",
+        path=config["bold_to_pe"]
+    output:
+        config["bold_to_ps"]
+    shell:
+        "python {input.cmd} {input.path} {output}"
 
 
 rule bold_to_pe:
