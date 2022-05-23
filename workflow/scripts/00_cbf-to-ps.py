@@ -14,7 +14,7 @@ def replace_path(path, append):
 
 def main(args):
 
-    ref = pd.read_csv('config/cbf-filtered.csv')
+    ref = pd.read_csv("config/cbf-filtered.csv")
     qc = pd.read_csv(
         replace_path(args.hs, "_desc-quality_control_cbf.csv"),
         usecols=["sub", "ses", "run", "FD", "cbfQEI"],
@@ -26,7 +26,7 @@ def main(args):
     if args.smooth_fwhm:
         diff = image.smooth_img(diff, args.smooth_fwhm)
 
-    ps_response = apply_ps.apply_ps(diff, ['nps', 'siips'])
+    ps_response = apply_ps.apply_ps(diff, ["nps", "siips"])
     df.join(pd.DataFrame([ps_response])).to_csv(args.output, index=False)
 
 
