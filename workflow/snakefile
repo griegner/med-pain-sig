@@ -35,7 +35,9 @@ def hs_map_ns(wc):
 
 rule all:
     input:
+        cbf_to_ps,
         config["cbf_ps_agg"],
+        bold_to_ps,
         config["bold_ps_agg"],
 
 
