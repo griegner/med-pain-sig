@@ -4,7 +4,7 @@ import pandas as pd
 configfile: "config/smk-config.yml"
 
 
-cbf = pd.read_csv("config/cbf-filtered.csv").query('task.str.endswith("49C")')
+cbf = pd.read_csv("config/cbf-filtered.csv")
 bold = pd.read_csv("config/bold-filtered.csv")
 
 cbf_to_ps = expand(
@@ -17,20 +17,6 @@ cbf_to_ps = expand(
 )
 
 bold_to_ps = expand(config["bold_to_ps"], zip, sub=bold["sub"], task=bold["task"])
-
-
-def hs_map_ns(wc):
-    "create mapping between heat runs and corresponding neutral runs"
-    wc.run = int(wc.run)
-    runs = [wc.run]
-    if wc.run % 2 == 0:
-        runs.append(wc.run - 1)
-    else:
-        runs.append(wc.run + 1)
-    return expand(
-        config["aslprep"],
-        run=runs,
-    )
 
 
 rule all:
@@ -54,13 +40,13 @@ rule cbf_ps_agg:
 rule cbf_to_ps:
     input:
         cmd="workflow/scripts/00_cbf-to-ps.py",
-        path=hs_map_ns,
+        path=config["aslprep"],
     output:
         config["cbf_to_ps"],
     params:
         smooth_fwhm=config["smooth_fwhm"],
     shell:
-        "python {input.cmd} {input.path[0]} {input.path[1]} {output} --smooth_fwhm {params.smooth_fwhm}"
+        "python {input.cmd} {input.path} {output} --smooth_fwhm {params.smooth_fwhm}"
 
 
 rule bold_ps_agg:

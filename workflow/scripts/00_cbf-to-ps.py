@@ -15,26 +15,27 @@ def replace_path(path, append):
 def main(args):
 
     ref = pd.read_csv("config/cbf-filtered.csv")
+
     qc = pd.read_csv(
-        replace_path(args.hs, "_desc-quality_control_cbf.csv"),
+        replace_path(args.input, "_desc-quality_control_cbf.csv"),
         usecols=["sub", "ses", "run", "FD", "cbfQEI"],
     )
-    df = ref.merge(qc)
 
-    diff = image.math_img("img1 - img2", img1=str(args.hs), img2=str(args.ns))
+    img = image.load_img(str(args.input))
 
     if args.smooth_fwhm:
-        diff = image.smooth_img(diff, args.smooth_fwhm)
+        img = image.smooth_img(img, args.smooth_fwhm)
 
-    ps_response = apply_ps.apply_ps(diff, ["nps", "siips", "pines", "distress"])
+    ps_response = apply_ps.apply_ps(img, ["nps", "siips", "pines"])
+
+    df = ref.merge(qc)
     df.join(pd.DataFrame([ps_response])).to_csv(args.output, index=False)
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="apply pain signatures to CBF maps")
-    parser.add_argument("hs", type=Path, help="input 49C ASLPrep CBF map")
-    parser.add_argument("ns", type=Path, help="input 35C ASLPrep CBF map")
+    parser.add_argument("input", type=Path, help="input ASLPrep CBF map")
     parser.add_argument("output", type=Path, help="output pain signature response")
     parser.add_argument(
         "--smooth_fwhm",

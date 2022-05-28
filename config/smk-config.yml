@@ -1,6 +1,6 @@
 smooth_fwhm: 6
 
-aslprep: /Volumes/MRI/2015BIDS/derivatives/aslprep/sub-{{sub}}/ses-{{ses}}/perf/sub-{{sub}}_ses-{{ses}}_run-{run}_space-MNI152NLin6Asym_res-2_desc-scrub_cbf.nii.gz
+aslprep: /Volumes/MRI/2015BIDS/derivatives/aslprep/sub-{sub}/ses-{ses}/perf/sub-{sub}_ses-{ses}_run-{run}_space-MNI152NLin6Asym_res-2_desc-scrub_cbf.nii.gz
 cbf_to_ps: data/cbf/sub-{sub}/ses-{ses}/sub-{sub}_ses-{ses}_run-{run}_task-{task}_desc-scrub_ps.csv
 cbf_ps_agg: results/cbf-ps-agg.csv
 
