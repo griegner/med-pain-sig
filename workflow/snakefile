@@ -22,9 +22,19 @@ bold_to_ps = expand(config["bold_to_ps"], zip, sub=bold["sub"], task=bold["task"
 rule all:
     input:
         cbf_to_ps,
-        config["cbf_ps_agg"],
+        config["cbf_drop_outliers"],
         bold_to_ps,
-        config["bold_ps_agg"],
+        config["bold_drop_outliers"],
+
+
+rule cbf_drop_outliers:
+    input:
+        cmd="workflow/scripts/01_cbf-drop-outliers.py",
+        path=config["cbf_ps_agg"],
+    output:
+        config["cbf_drop_outliers"],
+    script:
+        "scripts/01_cbf-drop-outliers.py"
 
 
 rule cbf_ps_agg:
@@ -47,6 +57,16 @@ rule cbf_to_ps:
         smooth_fwhm=config["smooth_fwhm"],
     shell:
         "python {input.cmd} {input.path} {output} --smooth_fwhm {params.smooth_fwhm}"
+
+
+rule bold_drop_outliers:
+    input:
+        cmd="workflow/scripts/02_bold-drop-outliers.py",
+        path=config["bold_ps_agg"],
+    output:
+        config["bold_drop_outliers"],
+    script:
+        "scripts/02_bold-drop-outliers.py"
 
 
 rule bold_ps_agg:

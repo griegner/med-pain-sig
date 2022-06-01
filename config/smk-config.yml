@@ -3,8 +3,10 @@ smooth_fwhm: 6
 aslprep: /Volumes/MRI/2015BIDS/derivatives/aslprep/sub-{sub}/ses-{ses}/perf/sub-{sub}_ses-{ses}_run-{run}_space-MNI152NLin6Asym_res-2_desc-scrub_cbf.nii.gz
 cbf_to_ps: data/cbf/sub-{sub}/ses-{ses}/sub-{sub}_ses-{ses}_run-{run}_task-{task}_desc-scrub_ps.csv
 cbf_ps_agg: results/cbf-ps-agg.csv
+cbf_drop_outliers: results/cbf-drop-outliers.csv
 
 fmriprep: /Volumes/MRI/mfc/derivatives/fmriprep/sub-mfc{sub}/func/sub-mfc{sub}_task-{task}_acq-epi_rec-fmap_space-MNI152NLin6Asym_res-2_desc-preproc_bold.nii.gz
 bold_to_pe: data/bold/sub-{sub}/sub-{sub}_task-{task}_desc-preproc_pe.nii.gz
 bold_to_ps: data/bold/sub-{sub}/sub-{sub}_task-{task}_desc-preproc_ps.csv
 bold_ps_agg: results/bold-ps-agg.csv
+bold_drop_outliers: results/bold-drop-outliers.csv
