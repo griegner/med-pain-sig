@@ -56,7 +56,12 @@ rule bold_ps_agg:
         config["bold_ps_agg"],
     run:
         ps_responses = [pd.read_csv(csv) for csv in input]
-        pd.concat(ps_responses).to_csv(output[0], index=False)
+        (
+            pd.concat(ps_responses)
+            .drop(columns=["task"])
+            .rename({"task_map": "task"}, axis="columns")
+            .to_csv(output[0], index=False)
+        )
 
 
 rule bold_to_ps:
