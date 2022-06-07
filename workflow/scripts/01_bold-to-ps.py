@@ -8,6 +8,7 @@ import apply_ps
 
 
 def get_sub_task(path):
+    "get sub and task from a bids path"
     ref = bids.parse_bids_filename(path)
     return ref["sub"], ref["task"]
 
@@ -20,9 +21,7 @@ def main(args):
         .query(f"sub == '{sub}' and task == '{task}'")
         .reset_index(drop=True)
     )
-    ps_response = apply_ps.apply_ps(
-        str(args.input), ["nps", "siips", "pines", "distress"]
-    )
+    ps_response = apply_ps.apply_ps(str(args.input), ["nps", "siips"])
     ref.join(pd.DataFrame([ps_response])).to_csv(args.output, index=False)
 
 

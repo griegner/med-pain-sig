@@ -8,8 +8,7 @@ def drop_outliers(df, col):
     q3 = df[col].quantile(0.75)
     iqr = q3 - q1
     lower_bound = q1 - (1.5 * iqr)
-    upper_bound = q3 + (1.5 * iqr)
-    df_drop = df[(df[col] > lower_bound) & (df[col] < upper_bound)]
+    df_drop = df[df[col] > lower_bound]
     print("> dropped outliers:", len(df) - len(df_drop))
     return df_drop
 

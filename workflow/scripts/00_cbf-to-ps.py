@@ -26,7 +26,7 @@ def main(args):
     if args.smooth_fwhm:
         img = image.smooth_img(img, args.smooth_fwhm)
 
-    ps_response = apply_ps.apply_ps(img, ["nps", "siips", "pines"])
+    ps_response = apply_ps.apply_ps(img, ["nps", "siips"])
 
     df = ref.merge(qc)
     df.join(pd.DataFrame([ps_response])).to_csv(args.output, index=False)
