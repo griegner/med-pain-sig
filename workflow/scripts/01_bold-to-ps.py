@@ -21,7 +21,10 @@ def main(args):
         .query(f"sub == '{sub}' and task == '{task}'")
         .reset_index(drop=True)
     )
-    ps_response = apply_ps.apply_ps(str(args.input), ["nps", "siips"])
+    ps_response = apply_ps.apply_ps(
+        str(args.input),
+        ["nps", "siips", "na-gen", "na-therm", "na-mech", "na-sound", "na-vis"],
+    )
     ref.join(pd.DataFrame([ps_response])).to_csv(args.output, index=False)
 
 

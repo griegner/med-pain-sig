@@ -18,7 +18,7 @@ def main(args):
 
     qc = pd.read_csv(
         replace_path(args.input, "_desc-quality_control_cbf.csv"),
-        usecols=["sub", "ses", "run", "FD", "cbfQEI"],
+        usecols=["sub", "ses", "run", "FD", "Gm_Wm_CBF_ratio", "cbfQEI"],
     )
 
     img = image.load_img(str(args.input))
@@ -26,7 +26,9 @@ def main(args):
     if args.smooth_fwhm:
         img = image.smooth_img(img, args.smooth_fwhm)
 
-    ps_response = apply_ps.apply_ps(img, ["nps", "siips"])
+    ps_response = apply_ps.apply_ps(
+        img, ["nps", "siips", "na-gen", "na-therm", "na-mech", "na-sound", "na-vis"]
+    )
 
     df = ref.merge(qc)
     df.join(pd.DataFrame([ps_response])).to_csv(args.output, index=False)
