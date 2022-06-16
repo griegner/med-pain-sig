@@ -1,6 +1,8 @@
 import argparse
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
 from nilearn.glm.first_level import FirstLevelModel
 from nilearn.interfaces import bids, fmriprep
 
@@ -20,7 +22,7 @@ class GLMInputs:
             sub_label=self.ref["sub"],
             filters=[("task", self.ref["task"])],
         )[0]
-        self.confounds = fmriprep.load_confounds(
+        self.confounds, self.sample_mask = fmriprep.load_confounds(
             str(preproc),
             strategy=("motion", "high_pass", "wm_csf", "scrub"),
             motion="derivatives",
@@ -28,7 +30,23 @@ class GLMInputs:
             scrub=0,
             fd_threshold=0.5,
             std_dvars_threshold=3,
-        )[0]
+        )
+        self.confounds = self.add_scrub()
+
+    def add_scrub(self):
+        "add scrubbing columns to confounds"
+        if self.sample_mask is None:
+            return self.confounds
+        else:
+            n_volumes = len(self.confounds)
+            sample_mask_index = np.setdiff1d(np.arange(n_volumes), self.sample_mask)
+            sample_mask_one_hot = np.zeros((n_volumes, len(sample_mask_index)))
+            sample_mask_one_hot[
+                sample_mask_index, np.arange(len(sample_mask_index))
+            ] = 1
+            return pd.concat(
+                [self.confounds, pd.DataFrame(sample_mask_one_hot)], axis=1
+            )
 
 
 def main(args):
