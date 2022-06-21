@@ -4,5 +4,7 @@ tmp*
 .vscode
 .DS_Store
 __pycache__
-# remove results/ when final
+# remove when final
+figures
 results 
+notebooks
