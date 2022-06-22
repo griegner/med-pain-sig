@@ -24,9 +24,10 @@ class GLMInputs:
         )[0]
         self.confounds, self.sample_mask = fmriprep.load_confounds(
             str(preproc),
-            strategy=("motion", "high_pass", "wm_csf", "scrub"),
-            motion="derivatives",
-            wm_csf="basic",
+            strategy=("motion", "high_pass", "compcor", "scrub"),
+            motion="basic",
+            compcor="anat_combined",
+            n_compcor=5,
             scrub=0,
             fd_threshold=0.5,
             std_dvars_threshold=3,

@@ -21,8 +21,8 @@ bold_to_ps = expand(config["bold_to_ps"], zip, sub=bold["sub"], task=bold["task"
 
 rule all:
     input:
-        cbf_to_ps,
-        bold_to_ps,
+        config["cbf_ps_agg"],
+        config["bold_ps_agg"],
 
 
 rule cbf_ps_agg:
