@@ -32,7 +32,12 @@ rule cbf_ps_agg:
         config["cbf_ps_agg"],
     run:
         ps_responses = [pd.read_csv(csv) for csv in input]
-        pd.concat(ps_responses).to_csv(output[0], index=False)
+        (
+            pd.concat(ps_responses)
+            .assign(group=lambda x: x["sub"].str[0], sub=lambda x: "cbf-" + x["sub"])
+            .drop(columns=["run"])
+            .to_csv(output[0], index=False)
+        )
 
 
 rule cbf_to_ps:
@@ -56,6 +61,7 @@ rule bold_ps_agg:
         ps_responses = [pd.read_csv(csv) for csv in input]
         (
             pd.concat(ps_responses)
+            .assign(group=lambda x: x["sub"].str[0], sub=lambda x: "bold-" + x["sub"])
             .drop(columns=["task"])
             .rename({"task_map": "task"}, axis="columns")
             .to_csv(output[0], index=False)

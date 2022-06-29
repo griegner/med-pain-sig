@@ -29,7 +29,7 @@ def get_residual(df):
 
 
 def get_corrwith_pain(df):
-    signature = df.iloc[0, 6]
+    signature = df["variable"].unique()[0]
     if "na" in signature:
         return df[["value"]].corrwith(df["unp"])
     elif "nps" in signature:
@@ -114,3 +114,8 @@ def mixed_anova(df, alpha=0.05):
     )
 
     return mixed_anova_df, pairwise_ttests_df
+
+
+def one_sample_ttest(df):
+    "one sample ttest"
+    return df.groupby("variable").apply(lambda df: pg.ttest(df["value"], 0))
