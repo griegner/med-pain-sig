@@ -4,6 +4,8 @@ tmp*
 .vscode
 .DS_Store
 __pycache__
+cbf-fmi.csv
+cbf-rr.csv
 # remove when final
 figures
 results 
