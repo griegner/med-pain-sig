@@ -25,7 +25,8 @@ def get_residual(df):
     y = df["nps"]
     X = df["int"]
     X = sm.add_constant(X)
-    return sm.OLS(y, X).fit().resid
+    df["int_residual"] = sm.OLS(y, X).fit().resid
+    return df
 
 
 def get_corrwith_pain(df):
@@ -38,19 +39,19 @@ def get_corrwith_pain(df):
         return df[["value"]].corrwith(df["int_residual"])
 
 
-def plot_group_by_manipulation(df, order=None, col_order=None, join=True):
+def plot_group_by_manipulation(df, order=None, col_order=None, cmap=None):
     "groupby variable and plot pointplot"
     grid = sns.catplot(
         data=df,
         order=order,
         col_order=col_order,
-        join=join,
+        join=True,
         kind="point",
         x="task",
         y="value",
         col="variable",
         hue="group",
-        palette="Blues",
+        palette=cmap,
         dodge=True,
         errorbar="se",
         aspect=1,
