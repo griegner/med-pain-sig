@@ -45,17 +45,17 @@ def plot_group_by_manipulation(df, order=None, col_order=None, cmap=None):
         data=df,
         order=order,
         col_order=col_order,
-        join=True,
-        kind="point",
+        kind="bar",
         x="task",
         y="value",
         col="variable",
         hue="group",
         palette=cmap,
-        dodge=True,
         errorbar="se",
         aspect=1,
         height=3,
+        edgecolor="k",
+        linewidth=0.2,
     )
     (
         grid.set_xticklabels(rotation=15)
