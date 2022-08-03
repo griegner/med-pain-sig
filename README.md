@@ -1,4 +1,4 @@
-## med_pain_sig
+## med-pain-sig
 > meditation effects on fMRI-based pain signatures
 
 **project organization**
@@ -14,7 +14,7 @@
 ├── data
 │   ├── bold/                   <- study 1 bold glm estimates *
 │   ├── cbf/                    <- study 2 cerebral blood flow estimates *
-│   └── pain_sigs/              <- CANlab pain-predictive signatures *
+│   └── pain-sigs/              <- CANlab pain-predictive signatures *
 ├── figures/                    <- figures derived from workflow/notebooks
 ├── results/
 │   ├── bold-ps-agg.csv         <- study 1 brain pattern response data

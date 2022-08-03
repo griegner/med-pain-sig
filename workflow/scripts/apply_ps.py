@@ -15,7 +15,7 @@ def apply_ps(img, pain_sigs=["nps", "siips"]):
     "apply each pain signature to the input image"
     ps_response = {}
     for ps in pain_sigs:
-        ps_img = image.load_img(f"data/pain_sigs/{ps}.nii.gz")
+        ps_img = image.load_img(f"data/pain-sigs/{ps}.nii.gz")
         if ps == "nps":
             img_resamp = image.resample_to_img(img, ps_img, interpolation="continuous")
             ps_response[ps] = _dot_product(img_resamp, ps_img)
