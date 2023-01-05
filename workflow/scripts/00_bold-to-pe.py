@@ -70,7 +70,7 @@ def main(args):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description="apply pain signatures to CBF maps")
+    parser = argparse.ArgumentParser(description="apply pain signatures to BOLD maps")
     parser.add_argument("input", type=Path, help="input fMRIprep preprocessed data")
     parser.add_argument(
         "output", type=Path, help="output stimulus-evoked parameter estimates"
