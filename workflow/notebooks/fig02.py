@@ -1,8 +1,12 @@
+import warnings
+
 import matplotlib.pyplot as plt
 import pingouin as pg
 import seaborn as sns
 import statsmodels.api as sm
 from scipy.stats import zscore
+
+warnings.simplefilter("ignore", category=FutureWarning)
 
 
 def drop_outliers(df, col):
@@ -30,6 +34,7 @@ def get_residual(df):
 
 
 def get_corrwith_pain(df):
+    """pearson correlations: na-unp, nps-int, siips-int_residual"""
     signature = df["variable"].unique()[0]
     if "na" in signature:
         return df[["value"]].corrwith(df["unp"])
@@ -57,11 +62,7 @@ def plot_group_by_manipulation(df, order=None, col_order=None, cmap=None):
         edgecolor="k",
         linewidth=0.2,
     )
-    (
-        grid.set_xticklabels(rotation=15)
-        .set_titles(template="{col_name}")
-        .set_xlabels("")
-    )
+    (grid.set_xticklabels(rotation=15).set_titles(template="{col_name}").set_xlabels(""))
     return grid
 
 
@@ -96,9 +97,7 @@ def mixed_anova(df, alpha=0.05):
     sig_interaction = (
         mixed_anova_df.query("Source == 'Interaction'")
         .pipe(
-            lambda df: df[
-                pg.multicomp(df["p-unc"].values, alpha=alpha, method="fdr_bh")[0]
-            ]
+            lambda df: df[pg.multicomp(df["p-unc"].values, alpha=alpha, method="fdr_bh")[0]]
         )  # multiple comparisons
         .index.get_level_values(0)
     )
@@ -106,11 +105,7 @@ def mixed_anova(df, alpha=0.05):
     pairwise_ttests_df = (
         df.query("variable in @sig_interaction")
         .groupby("variable")
-        .apply(
-            lambda df: df.pairwise_tests(
-                within_first=False, nan_policy="pairwise", **kwargs
-            )
-        )
+        .apply(lambda df: df.pairwise_tests(within_first=False, nan_policy="pairwise", **kwargs))
         .query("Contrast == 'group * task'")
     )
 
