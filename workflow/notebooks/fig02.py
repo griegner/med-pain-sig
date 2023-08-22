@@ -19,7 +19,7 @@ def drop_outliers(df, col):
 
 
 def scale(data, signature_list):
-    "scale signature reponses to zero mean and unit variance"
+    "scale signature responses to zero mean and unit variance"
     data[signature_list] = data[signature_list].transform(zscore)
     return data
 
@@ -44,8 +44,9 @@ def get_corrwith_pain(df):
         return df[["value"]].corrwith(df["int_residual"])
 
 
-def plot_group_by_manipulation(df, order=None, col_order=None, cmap=None):
+def plot_group_by_manipulation(df, order=None, col_order=None):
     "groupby variable and plot pointplot"
+    cmap = sns.color_palette(["#E9E9E9", "#9A9999"], n_colors=2)
     grid = sns.catplot(
         data=df,
         order=order,
@@ -87,26 +88,42 @@ def plot_correlations(df, order=None):
     return ax.get_figure()
 
 
+def _multicomp_fdr(df, pcol="p-unc"):
+    """the Benjamini-Hochberg procedure"""
+    p_unc = df[pcol]
+    # returns FDR-corrected p-values
+    q_fdr = pg.multicomp(p_unc, method="fdr_bh")[1]
+    idx = df.columns.get_loc(pcol)
+    df.insert(idx + 1, "q-fdr", q_fdr)
+    return df
+
+
 def mixed_anova(df, alpha=0.05):
     "group x manipulation anova"
 
     kwargs = dict(dv="value", within="task", between="group", subject="sub")
 
-    mixed_anova_df = df.groupby("variable").apply(lambda df: df.mixed_anova(**kwargs))
-
-    sig_interaction = (
-        mixed_anova_df.query("Source == 'Interaction'")
-        .pipe(
-            lambda df: df[pg.multicomp(df["p-unc"].values, alpha=alpha, method="fdr_bh")[0]]
-        )  # multiple comparisons
-        .index.get_level_values(0)
+    mixed_anova_df = (
+        df.groupby("variable")
+        .apply(lambda df: df.mixed_anova(**kwargs))
+        .groupby("Source")
+        .apply(_multicomp_fdr)
     )
+
+    sig_interaction = mixed_anova_df.query(
+        "Source == 'Interaction' and `q-fdr` < @alpha"
+    ).index.get_level_values(0)
 
     pairwise_ttests_df = (
         df.query("variable in @sig_interaction")
         .groupby("variable")
-        .apply(lambda df: df.pairwise_tests(within_first=False, nan_policy="pairwise", **kwargs))
+        .apply(
+            lambda df: df.pairwise_tests(
+                within_first=False, nan_policy="pairwise", effsize="cohen", **kwargs
+            )
+        )
         .query("Contrast == 'group * task'")
+        .pipe(_multicomp_fdr)
     )
 
     return mixed_anova_df, pairwise_ttests_df
@@ -114,4 +131,8 @@ def mixed_anova(df, alpha=0.05):
 
 def one_sample_ttest(df):
     "one sample ttest"
-    return df.groupby("variable").apply(lambda df: pg.ttest(df["value"], 0))
+    return (
+        df.groupby(["group", "variable"])
+        .apply(lambda df: pg.ttest(df["value"], 0))
+        .pipe(_multicomp_fdr, "p-val")
+    )
