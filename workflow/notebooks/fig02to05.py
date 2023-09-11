@@ -68,7 +68,7 @@ def plot_group_by_manipulation(df, order=None, col_order=None):
 
 
 def plot_correlations(df, order=None):
-    "plot correlations between brain pattern responses and pain ratings"
+    "plot correlations between pain signature responses and pain ratings"
     cmap = sns.color_palette(["#D62F26", "#EF633E"] + 5 * ["#4067AD"], n_colors=7)
     ax = sns.pointplot(
         data=df,
