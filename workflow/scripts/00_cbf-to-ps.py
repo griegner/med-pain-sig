@@ -1,10 +1,9 @@
 import argparse
 from pathlib import Path
 
+import apply_ps
 import pandas as pd
 from nilearn import image
-
-import apply_ps
 
 
 def replace_path(path, append):
@@ -27,7 +26,7 @@ def main(args):
         img = image.smooth_img(img, args.smooth_fwhm)
 
     ps_response = apply_ps.apply_ps(
-        img, ["nps", "siips", "na-gen", "na-therm", "na-mech", "na-sound", "na-vis"]
+        img, ["nps", "siips", "na", "na-therm", "na-mech", "na-sound", "na-vis"]
     )
 
     df = ref.merge(qc)

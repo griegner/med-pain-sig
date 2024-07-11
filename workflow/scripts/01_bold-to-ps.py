@@ -1,10 +1,9 @@
 import argparse
 from pathlib import Path
 
+import apply_ps
 import pandas as pd
 from nilearn.interfaces import bids
-
-import apply_ps
 
 
 def get_sub_task(path):
@@ -23,7 +22,7 @@ def main(args):
     )
     ps_response = apply_ps.apply_ps(
         str(args.input),
-        ["nps", "siips", "na-gen", "na-therm", "na-mech", "na-sound", "na-vis"],
+        ["nps", "siips", "na", "na-therm", "na-mech", "na-sound", "na-vis"],
     )
     ref.join(pd.DataFrame([ps_response])).to_csv(args.output, index=False)
 
@@ -31,9 +30,7 @@ def main(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="apply pain signatures to pe maps")
-    parser.add_argument(
-        "input", type=Path, help="input stimulus-evoked parameter estimates"
-    )
+    parser.add_argument("input", type=Path, help="input stimulus-evoked parameter estimates")
     parser.add_argument("output", type=Path, help="output pain signature response")
 
     main(parser.parse_args())
