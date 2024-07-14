@@ -14,9 +14,9 @@
 ├── data
 │   ├── bold-ps-agg.csv         <- study 1 pain signature response data
 │   ├── cbf-ps-agg.csv          <- study 2 pain signature response data
-│   ├── bold/                   <- study 1 bold glm estimates *
-│   ├── cbf/                    <- study 2 cerebral blood flow estimates *
-│   └── pain-sigs/              <- CANlab pain-predictive signatures *
+│   ├── bold/                   <- study 1 bold glm estimates [-]
+│   ├── cbf/                    <- study 2 cerebral blood flow estimates [-]
+│   └── pain-sigs/              <- CANlab pain-predictive signatures [-]
 ├── figures/                    <- figures derived from notebooks/
 ├── notebooks/
 │   ├── fig01.ipynb             <- plot neuroimaging data
@@ -33,7 +33,7 @@
     │   └── apply_ps.py
     └── snakefile               <- documentation of snakemake workflow
 
-* not included in this repository
+[-] not included in this repository
 ```
 
 The `data/*csv` files contain the long-form pain signature and behavioral data, from which the `figures/` and `results/` can be reproduced with these [notebooks/](notebooks/). Running the '*ipynb' files requires both Python and R packages, so a pre-installed distribution of the [conda package manager](https://conda.io/projects/conda/en/latest/user-guide/install/index.html#) (Anaconda, Miniconda, or Miniforge) is needed.  
