@@ -1,6 +1,17 @@
 ## med-pain-sig
 > meditation effects on fMRI-based pain signatures
 
+**publication**
+```
+@article{riegner2024mindfulness,
+  title={Mindfulness meditation and placebo modulate distinct multivariate neural signatures to reduce pain},
+  author={Riegner, Gabriel and Dean, Jon and Wager, Tor D and Zeidan, Fadel},
+  journal={Biological Psychiatry},
+  year={2024},
+  publisher={Elsevier}
+}
+```
+
 **project organization**
 ```
 .
