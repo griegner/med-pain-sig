@@ -1,6 +1,8 @@
 ## med-pain-sig
 > meditation effects on fMRI-based pain signatures
 
+<img src="./figures/fig00-pain-sigs.png" width="300"/>
+
 **publication**
 ```
 @article{riegner2024mindfulness,
